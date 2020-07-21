@@ -7,20 +7,23 @@ namespace Cafe24App.CriteoCatalog.Models.Cafe24
 {
     public class ProductListResult
     {
-        public Product[] products { get; set; }
+        public List<Product> products { get; set; }
     }
 
+    [Serializable]
     public class Product
     {
         public int product_no { get; set; }
-        //public CategoryInProduct[] category { get; set; }
+        public string product_name { get; set; }
         public string price { get; set; }
         public string retail_price { get; set; }
-        public string summary_description { get; set; }
+        //public string summary_description { get; set; }
+        //public string link { get; set; }
         //public Additional_Image[] additional_image { get; set; }
-        public string adult_certification { get; set; }
+        //public string adult_certification { get; set; }
         public string detail_image { get; set; }
         public string sold_out { get; set; }
+        //public string buy_limit_by_product { get; set; }
     }
 
     //public class CategoryInProduct
