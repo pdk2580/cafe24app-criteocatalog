@@ -34,7 +34,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
             Directory.CreateDirectory(path);
 
             string installedAppsString = string.Empty;
-            if (Directory.Exists(fullFilename))
+            if (System.IO.File.Exists(fullFilename))
             {
                 using (StreamReader sr = new StreamReader(fullFilename))
                 {
