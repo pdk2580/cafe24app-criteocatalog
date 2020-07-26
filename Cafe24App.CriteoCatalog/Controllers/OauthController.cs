@@ -11,18 +11,35 @@ namespace Cafe24App.CriteoCatalog.Controllers
     {
         // GET: Oauth
         //public ActionResult Index(string code)
-        public ActionResult Index(string code, string state, string mallId)
+        public ActionResult Index(string code, string state)
         {
-            if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(state) && !string.IsNullOrEmpty(mallId))
+            if (!string.IsNullOrEmpty(code) && !string.IsNullOrEmpty(state))
             {
-                AddInstalledMall(mallId);
-
-                return Content("Redirecting...<script>alert('앱이 성공적으로 설치되었습니다');window.location.href='/';</script>");
+                Uri referrerUri = Request.UrlReferrer;
+                string mallId = GetSubDomain(referrerUri);
+                if (!string.IsNullOrEmpty(mallId))
+                {
+                    AddInstalledMall(mallId);
+                    return Content("Redirecting...<script>alert('앱이 성공적으로 설치되었습니다');window.location.href='/';</script>");
+                }
+                else
+                    return Content("Redirecting...<script>alert('mallId를 확인할 수 없습니다. 관리자에게 문의 바랍니다');window.location.href='/';</script>");
             }
             else
-            {
                 return Content("Redirecting...<script>alert('앱을 설치하는데 에러가 발생했습니다.관리자에게 문의 바랍니다');window.location.href='/';</script>");
+        }
+
+        private static string GetSubDomain(Uri url)
+
+        {
+            string host = url.Host;
+            if (host.Split('.').Length > 1)
+
+            {
+                int index = host.IndexOf(".");
+                return host.Substring(0, index);
             }
+            return string.Empty;
         }
 
         public void AddInstalledMall(string mallId)
