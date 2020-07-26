@@ -139,6 +139,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Cafe24\Cafe24Categories.cs" />
+    <Compile Include="Models\Cafe24\ProductCategory.cs" />
     <Compile Include="Models\Cafe24\ProductListResult.cs" />
     <Compile Include="Models\Cafe24\CategoryListResult.cs" />
     <Compile Include="Models\Cafe24\ProductDetailResult.cs" />
