@@ -255,7 +255,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
             string filename = $"{mallId}.csv";
 
             Directory.CreateDirectory(path);
-            using (StreamWriter outputFile = new StreamWriter(Path.Combine(path, filename)))
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(path, filename), false))
             {
                 outputFile.WriteLine(csvString);
             }
