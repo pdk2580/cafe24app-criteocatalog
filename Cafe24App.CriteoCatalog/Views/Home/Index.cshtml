@@ -1,24 +1,70 @@
-﻿
+﻿@model List<dynamic>
 @{
     ViewBag.Title = "Home";
 }
 
 <main>
-    <h2>사용 가이드</h2>
+    <h2>설치된 상점</h2>
+    <section>
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="malls" class="col-sm-2 control-label">상점: </label>
+                <div class="col-sm-10">
+                    <select name="malls" id="malls" class="form-control">
+                        <option value="default">상점을 선택해 주세요</option>
+                        @foreach (var mall in Model)
+                        {
+                            <option value="@mall.id" data-last-updated="@mall.lastUpdated">@mall.id</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">상점 피드 URL: </label>
+                <div class="col-sm-10">
+                    <input type="text" id="txtFeedURL" value="" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">마지막 업데이트: </label>
+                <div class="col-sm-10">
+                    <input type="text" id="lastUpdated" value="" class="form-control" readonly />
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+
+    <hr />
+    
+    <h2>피드 설치 가이드</h2>
     <section>
         <ol>
             <li>
                 아래 텍스트 박스에 상점 아이디를 입력합니다 <br />
-                <input type="text" id="txtMallId" placeholder="상점 아이디" />
+                <input type="text" id="txtMallId" class="form-control" placeholder="상점 아이디" />
             </li>
             <li>
                 아래 '인스톨' 버튼을 클릭 해서 상점에 Criteo Catalog앱을 설치합니다(이미 앱을 한번 설치 하셨으면 스킵하셔도 됩니다) <br />
-                <input type="button" id="btnInstall" value="인스톨" />
+                <input type="button" id="btnInstall" class="btn btn-primary" value="인스톨" />
             </li>
-            <li>
+            @*<li>
                 설치가 완료되면 아래 'Criteo 피드 URL' 버튼을 클릭 해 해당 URL을 사용하여 크리테오와 연동을 시작하시면 됩니다<br />
                 <input type="button" id="btnUrl" value="Criteo 피드 URL" />
-            </li>
+            </li>*@
         </ol>
     </section>
+
+    @*<hr />
+
+    <h2>태그 설치 가이드</h2>
+    <section>
+        <ol>
+            <li>
+
+            </li>
+        </ol>
+    </section>*@
+
 </main>

@@ -25,6 +25,24 @@ $("#btnUrl").click(function () {
     }
 });
 
+$("#malls").change(function () {
+    updateMallInfo();
+});
+
+function updateMallInfo() {
+    var yourSelect = document.getElementById("malls");
+    var selectedMallId = yourSelect.options[yourSelect.selectedIndex].value;
+    var selectedLastUpdate = yourSelect.options[yourSelect.selectedIndex].getAttribute("data-last-updated");
+
+    if (selectedMallId !== "default") {
+        $("#txtFeedURL").val(window.location.protocol + window.location.host + "/catalogs/" + selectedMallId);
+        $("#lastUpdated").val(selectedLastUpdate);
+    } else {
+        $("#txtFeedURL").val("");
+        $("#lastUpdated").val("");
+    }
+}
+
 function generateRandomString(length) {
     var result = '';
     var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
