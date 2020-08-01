@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.Caching;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Caching;
@@ -26,7 +27,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
     {
         string clientId = "jfteFzqAlURv2XMrCUuFFL";
         HttpClient client = new HttpClient();
-        List<Product> products = new List<Product>();
+        //Dictionary<string, Task> taskDictionary = new Dictionary<string, Task>();
 
         public CatalogController()
         {
@@ -43,20 +44,75 @@ namespace Cafe24App.CriteoCatalog.Controllers
 
             //return Content(string.Join(",", installedMalls));
             //return Content(installedMalls.Length.ToString());
+            //foreach (string mallId in installedMalls)
+            //{
+            //    Stopwatch stopwatch = new Stopwatch();
+            //    stopwatch.Start();
+            //    string timeTaken = await GenerateCatalog(mallId);
+            //    stopwatch.Stop();
+
+            //    output += $"Time elapsed for {mallId}: {stopwatch.Elapsed}" + Environment.NewLine;
+            //}
+
+            //List<Task> taskList = new List<Task>();
             foreach (string mallId in installedMalls)
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                await GenerateCatalog(mallId);
-                stopwatch.Stop();
+                var sessionObj = Session[mallId];
+                if (sessionObj != null)
+                {
+                    TaskStatus taskStatus = (TaskStatus)sessionObj;
+                    if (taskStatus.Equals(TaskStatus.RanToCompletion) || taskStatus.Equals(TaskStatus.Faulted) || taskStatus.Equals(TaskStatus.Canceled))
+                    {
+                        Task currentTask = Task.Run(() => GenerateCatalog(mallId)).ContinueWith(task => UpdateSession(mallId, task));
+                        Session[mallId] = currentTask.Status;
+                        output += $"{mallId}: Previous task was {taskStatus}. Generate catalog task re-created and triggered{Environment.NewLine}";
+                    }
+                    else
+                    {
+                        output += $"{mallId}: Generate catalog task is still running. Last successful generation was {GetLastSuccessfulGeneration(mallId).ToString("yyyy-MM-dd HH:mm:ss")}{Environment.NewLine}";
+                    }
+                }
+                else
+                {
+                    Task currentTask = Task.Run(() => GenerateCatalog(mallId)).ContinueWith(task => UpdateSession(mallId, task));
+                    Session[mallId] = currentTask.Status;
+                    output += $"{mallId}: Generate catalog task created and triggered{Environment.NewLine}";
+                }
+                
 
-                output += $"Time elapsed for {mallId}: {stopwatch.Elapsed}" + Environment.NewLine;
+                //if (!taskDictionary.ContainsKey(mallId))
+                //{
+                //    Task currentTask = Task.Run(() => GenerateCatalog(mallId));
+                //    taskDictionary[mallId] = currentTask;
+                //    output += $"{mallId}: Generate catalog task created and triggered{Environment.NewLine}";
+                //}
+                //else
+                //{
+                //    Task currentTask = taskDictionary[mallId];
+                //    if (currentTask.IsCompleted)
+                //    {
+                //        string previousTaskStatus = currentTask.Status.ToString();
+
+                //        currentTask = Task.Run(() => GenerateCatalog(mallId));
+                //        taskDictionary[mallId] = currentTask;
+                //        output += $"{mallId}: Previous task was {previousTaskStatus}. Generate catalog task re-created and triggered{Environment.NewLine}";
+                //    }
+                //    else
+                //    {
+                //        output += $"{mallId}: Generate catalog task is already running";
+                //    }
+                //}
+                
             }
 
-            if (string.IsNullOrEmpty(output))
-                return Content("No installed malls");
-            else
-                return Content(output);
+            return Content(output);
+
+            //if (string.IsNullOrEmpty(output))
+            //    //return Task.FromResult(Content("No installed malls"));
+            //    return Content("No installed malls");
+            //else
+            //    //return Task.FromResult(Content(output));
+            //    return Content(output);
         }
 
         // GET: Catalog
@@ -199,6 +255,12 @@ namespace Cafe24App.CriteoCatalog.Controllers
             return Content("MallId cannot be nulll or empty");
         }
 
+        private void UpdateSession(string mallId, Task<string> task)
+        {
+            Session[mallId] = task.Status;
+        }
+
+        //private async void GenerateCatalog(string mallId)
         private async Task<string> GenerateCatalog(string mallId)
         {
             var allCategories = GetAllCategories(mallId);
@@ -234,6 +296,21 @@ namespace Cafe24App.CriteoCatalog.Controllers
                 return new List<string>().ToArray();
 
             return installedMallString.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).Where(mallId => !string.IsNullOrEmpty(mallId)).ToArray();
+        }
+
+        private DateTime GetLastSuccessfulGeneration(string mallId)
+        {
+            string path = Path.Combine(Server.MapPath("~/Catalogs"));
+            string filename = $"{mallId}.csv";
+
+            try
+            {
+                return System.IO.File.GetLastWriteTime(Path.Combine(path, filename));
+            }
+            catch (Exception ex)
+            {
+                return DateTime.MinValue;
+            }
         }
 
         private string ReadCatalog(string mallId)
