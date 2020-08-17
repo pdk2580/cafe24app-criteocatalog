@@ -355,8 +355,8 @@ namespace Cafe24App.CriteoCatalog.Controllers
                 {
                     id = product.product_no.ToString(),
                     title = product.product_name,
-                    price = product.price,
-                    sale_price = product.retail_price,
+                    price = product.retail_price,
+                    sale_price = product.price,
                     image_link = product.detail_image,
                     link = string.Format("{0}/product/detail.html?product_no={1}", baseURL, product.product_no),
                     categoryid1 = productCategories.Where(productCategory => productCategory.product_no.Equals(product.product_no)).FirstOrDefault()?.category.GetCategory1(),
