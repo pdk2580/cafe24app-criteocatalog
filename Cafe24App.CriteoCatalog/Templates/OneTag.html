@@ -1,0 +1,112 @@
+﻿<div class="criteo-onetag" data-version="1.0">
+    <script type="text/javascript" src="//static.criteo.net/js/ld/ld.js" async="true"></script>
+    <script type="text/javascript">
+        var listingModuleClass = "xans-product-listnormal";
+        var detailModuleClass = "xans-product-detail";
+        var basketModuleClass = "xans-order-basketpackage";
+        var salesModuleClass = "xans-order-result";
+
+        if (getPageType() === "listing") {
+            criteoEvent({ event: "viewList", item: getTop3ProductIds() });
+        } else if (getPageType() === "detail") {
+            criteoEvent({ event: "viewItem", item: getProductId() });
+        } else if (getPageType() === "basket") {
+            criteoEvent({ event: "viewBasket", item: getBasketProducts() });
+        } else if (getPageType() === "sales") {
+            criteoEvent({ event: "trackTransaction", id: getTransactionId(), item: getSalesProducts() });
+        } else {
+            criteoEvent({ event: "viewHome" });
+        }
+
+        //function waitFor(variable) {
+        //    if (typeof variable !== "undefined") {
+        //        //variable exists, do what you want
+        //    }
+        //    else {
+        //        setTimeout(waitForElement, 250);
+        //    }
+        //}
+
+        function getTransactionId() {
+            return EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA.order_id;
+        }
+
+        function getSalesProducts() {
+            if (typeof EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA !== "undefined") {
+                var criteoProductData = [];
+                EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA.order_product.forEach(function (productData) {
+                    criteoProductData.push({ id: productData.product_no, price: productData.sum_total_opt_price, quantity: productData.quantity });
+                });
+                return criteoProductData;
+            }
+            else {
+                setTimeout(getSalesProducts, 100);
+            }
+        }
+        
+        function getBasketProducts() {
+            if (typeof aBasketProductData !== "undefined") {
+                var criteoProductData = [];
+                aBasketProductData.forEach(function (productData) {
+                    criteoProductData.push({ id: productData.product_no, price: productData.product_sum_price, quantity: productData.quantity });
+                });
+                return criteoProductData;
+            }
+            else {
+                setTimeout(getBasketProducts, 100);
+            }
+        }
+
+        function getProductId() {
+            var matches = document.documentElement.innerHTML.match(/(?<=\bproduct_no=")[^"]*/g);
+            if (matches !== null) {
+                return matches[0];
+            } else {
+                return "";
+            }
+        }
+
+        function getTop3ProductIds() {
+            var productIds = [];
+            var elements = document.querySelectorAll("." + listingModuleClass + " ul.prdList > li");
+            elements.forEach(function (element) {
+                var elementId = element.id;
+                if (elementId !== "") {
+                    var productId = elementId.split("_")[1];
+                    productIds.push(productId);
+                }
+            });
+            return productIds.slice(0, 3);
+        }
+
+        function getPageType() {
+            var elements = document.getElementsByClassName(listingModuleClass);
+            if (elements.length > 0)
+                return "listing";
+
+            elements = document.getElementsByClassName(detailModuleClass);
+            if (elements.length > 0)
+                return "detail";
+
+            elements = document.getElementsByClassName(basketModuleClass);
+            if (elements.length > 0)
+                return "basket";
+
+            elements = document.getElementsByClassName(salesModuleClass);
+            if (elements.length > 0)
+                return "sales";
+
+            return "homepage";
+        }
+
+        function criteoEvent(eventObj) {
+            window.criteo_q = window.criteo_q || [];
+            var deviceType = /iPad/.test(navigator.userAgent) ? "t" : /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Silk/.test(navigator.userAgent) ? "m" : "d";
+            window.criteo_q.push(
+                { event: "setAccount", account: $partnerId$ },
+                { event: "setEmail", email: "" },
+                { event: "setSiteType", type: deviceType },
+                eventObj);
+        }
+    </script>
+</div>

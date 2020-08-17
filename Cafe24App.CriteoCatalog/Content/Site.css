@@ -19,3 +19,11 @@ textarea {
 li {
     margin-bottom:15px;
 }
+
+textarea.form-control {
+    min-width:100%;
+}
+
+.panel-body > div {
+    overflow:hidden;
+}

@@ -29,13 +29,75 @@ $("#malls").change(function () {
     updateMallInfo();
 });
 
+$("#btnMain").click(function () {
+    var partnerId = checkParterId();
+
+    var beforeHtmlString = $("#beforeMain").val();
+    var template = getTemplate().replace("$partnerId$", partnerId);
+    var afterHtmlString = addCriteoTag(beforeHtmlString, template);
+
+    $("#afterMain").val(afterHtmlString);
+});
+
+$("#btnCommon").click(function () {
+    var partnerId = checkParterId();
+
+    var beforeHtmlString = $("#beforeCommon").val();
+    var template = getTemplate().replace("$partnerId$", partnerId);
+    var afterHtmlString = addCriteoTag(beforeHtmlString, template);
+
+    $("#afterCommon").val(afterHtmlString);
+});
+
+function addCriteoTag(currentHtml, template) {
+    var tagVersion = getTagVersion(currentHtml);
+    if (tagVersion !== null) {
+        alert("Criteo 태그가 이미 적용되어 있습니다. 현재 버전: " + tagVersion);
+        return "";
+    }
+
+    //if (eventType === "vh") {
+    var indexOfBody = currentHtml.indexOf("</body>");
+    if (indexOfBody < 0) {
+        alert("</body> 태그를 찾을수 없습니다");
+        return "";
+    }
+
+    return currentHtml.slice(0, indexOfBody) + template + currentHtml.slice(indexOfBody);
+    //}
+}
+
+function getTagVersion(currentHtml) {
+    return currentHtml.match(/(?<=\bdata-version=")[^"]*/g);
+}
+
+function getTemplate() {
+    //if (eventType === "vh") {
+        return $.ajax({
+            type: "GET",
+            url: "templates/onetag.html",
+            async: false
+        }).responseText;
+    //}
+}
+
+function checkParterId() {
+    var partnerId = $("#txtPartnerId").val();
+    if (partnerId === "") {
+        alert("파트너 아이디를 입력해 주시기 바랍니다")
+        throw new Error("Partner ID cannot be null");
+    } else {
+        return partnerId;
+    }
+}
+
 function updateMallInfo() {
     var yourSelect = document.getElementById("malls");
     var selectedMallId = yourSelect.options[yourSelect.selectedIndex].value;
     var selectedLastUpdate = yourSelect.options[yourSelect.selectedIndex].getAttribute("data-last-updated");
 
     if (selectedMallId !== "default") {
-        $("#txtFeedURL").val(window.location.protocol + window.location.host + "/catalogs/" + selectedMallId);
+        $("#txtFeedURL").val(window.location.protocol + "//" + window.location.host + "/catalogs/" + selectedMallId);
         $("#lastUpdated").val(selectedLastUpdate);
     } else {
         $("#txtFeedURL").val("");
