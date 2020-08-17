@@ -29,26 +29,26 @@ $("#malls").change(function () {
     updateMallInfo();
 });
 
-$("#btnMain").click(function () {
+$("#btnPc").click(function () {
     var partnerId = checkParterId();
     var enableNpay = checkEnableNpay();
 
-    var beforeHtmlString = $("#beforeMain").val();
+    var beforeHtmlString = $("#beforePc").val();
     var template = getTemplate().replace("$partnerId$", partnerId).replace("$enableNpayTag$", enableNpay);
     var afterHtmlString = addCriteoTag(beforeHtmlString, template);
 
-    $("#afterMain").val(afterHtmlString);
+    $("#afterPc").val(afterHtmlString);
 });
 
-$("#btnCommon").click(function () {
+$("#btnMobile").click(function () {
     var partnerId = checkParterId();
     var enableNpay = checkEnableNpay();
 
-    var beforeHtmlString = $("#beforeCommon").val();
+    var beforeHtmlString = $("#beforeMobile").val();
     var template = getTemplate().replace("$partnerId$", partnerId).replace("$enableNpayTag$", enableNpay);
     var afterHtmlString = addCriteoTag(beforeHtmlString, template);
 
-    $("#afterCommon").val(afterHtmlString);
+    $("#afterMobile").val(afterHtmlString);
 });
 
 function addCriteoTag(currentHtml, template) {

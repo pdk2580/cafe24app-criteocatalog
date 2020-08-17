@@ -69,7 +69,7 @@
 
     <h2>태그 설치</h2>
     <section>
-        <div class="form-group">아래 택스트 박스에 파트너 아이디를 입력 후 각 페이지별 현재 코드를 넣고 "코드 추가" 버튼을 클릭 하십시오.</div>
+        <div class="form-group">아래 택스트 박스에 파트너 아이디를 입력 후 한 레이아웃의 현재 코드를 넣고 "코드 추가" 버튼을 클릭 하시면 오른쪽 택스트 박스에 현재 코드 + 크리테오 태그가 추가됩니다. 추가된 코드를 현재 레이아웃에 전체 복사 붙여넣기를 하면 됩니다. 태그가 발동되기 원하시는 모든 레이아웃에 적용을 해야합니다.</div>
         <div class="form-group">
             <input type="text" id="txtPartnerId" class="form-control" placeholder="파트너 아이디" />
         </div>
@@ -80,130 +80,65 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">메인 레이아웃</h3>
+                <h3 class="panel-title">PC 디자인</h3>
             </div>
             <div class="panel-body">
                 <div class="col-sm-12">
-                    <p>디자인 관리 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 메인 레이아웃</p>
+                    <p>아래 레이아웃을 포함한 태그를 발동하기 원하시는 모든 PC 레이아웃에 적용해야 합니다.</p>
+                    <ul>
+                        <li>디자인 관리 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 메인 레이아웃</li>
+                        <li>디자인 관리 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 공통 레이아웃</li>
+                    </ul>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="beforeMain">현재 코드</label>
-                        <textarea id="beforeMain" class="form-control" rows="3"></textarea>
+                        <label for="beforePc">현재 코드</label>
+                        <textarea id="beforePc" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="afterMain">현재 코드 + 홈페이지 태그</label>
-                        <textarea id="afterMain" class="form-control" rows="3"></textarea>
+                        <label for="afterPc">현재 코드 + 크리태오 태그</label>
+                        <textarea id="afterPc" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input type="button" id="btnMain" class="btn btn-primary" value="코드 추가" />
+                        <input type="button" id="btnPc" class="btn btn-primary" value="코드 추가" />
                     </div>
                 </div>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">공통 레이아웃</h3>
+                <h3 class="panel-title">모바일 디자인</h3>
             </div>
             <div class="panel-body">
                 <div class="col-sm-12">
-                    <p>디자인 관리 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 공통 레이아웃</p>
+                    <p>아래 레이아웃을 포함한 태그를 발동하기 원하시는 모든 모바일 레이아웃에 적용해야 합니다.</p>
+                    <ul>
+                        <li>모바일 쇼핑몰 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 메인 레이아웃</li>
+                        <li>모바일 쇼핑몰 -> 전체화면 보기 -> 레이아웃 -> 기본 레이아웃 -> 공통 레이아웃</li>
+                    </ul>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="beforeCommon">현재 코드</label>
-                        <textarea id="beforeCommon" class="form-control" rows="3"></textarea>
+                        <label for="beforeMobile">현재 코드</label>
+                        <textarea id="beforeMobile" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label for="afterCommon">현재 코드 + 카테고리/리스팅 태그</label>
-                        <textarea id="afterCommon" class="form-control" rows="3"></textarea>
+                        <label for="afterMobile">현재 코드 + 크리테오 태그</label>
+                        <textarea id="afterMobile" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <div class="form-group">
-                        <input type="button" id="btnCommon" class="btn btn-primary" value="코드 추가" />
+                        <input type="button" id="btnMobile" class="btn btn-primary" value="코드 추가" />
                     </div>
                 </div>
             </div>
         </div>
-        @*<div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">상품상세</h3>
-            </div>
-            <div class="panel-body">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="beforeProduct">현재 코드</label>
-                        <textarea id="beforeProduct" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="afterProduct">현재 코드 + 상품 태그</label>
-                        <textarea id="afterProduct" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input type="button" id="btnProduct" class="btn btn-primary" value="코드 추가" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">장바구니</h3>
-            </div>
-            <div class="panel-body">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="beforeBasket">현재 코드</label>
-                        <textarea id="beforeBasket" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="afterBasket">현재 코드 + 장바구니 태그</label>
-                        <textarea id="afterBasket" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input type="button" id="btnBasket" class="btn btn-primary" value="코드 추가" />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">주문완료</h3>
-            </div>
-            <div class="panel-body">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="beforeSales">현재 코드</label>
-                        <textarea id="beforeSales" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label for="afterSales">현재 코드 + 세일즈 태그</label>
-                        <textarea id="afterSales" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <div class="form-group">
-                        <input type="button" id="btnSales" class="btn btn-primary" value="코드 추가" />
-                    </div>
-                </div>
-            </div>
-        </div>*@
     </section>
-
 </main>

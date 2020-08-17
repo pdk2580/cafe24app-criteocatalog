@@ -16,10 +16,6 @@ textarea {
     max-width: 280px;
 }
 
-li {
-    margin-bottom:15px;
-}
-
 textarea.form-control {
     min-width:100%;
 }
