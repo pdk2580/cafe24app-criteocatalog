@@ -31,9 +31,10 @@ $("#malls").change(function () {
 
 $("#btnMain").click(function () {
     var partnerId = checkParterId();
+    var enableNpay = checkEnableNpay();
 
     var beforeHtmlString = $("#beforeMain").val();
-    var template = getTemplate().replace("$partnerId$", partnerId);
+    var template = getTemplate().replace("$partnerId$", partnerId).replace("$enableNpayTag$", enableNpay);
     var afterHtmlString = addCriteoTag(beforeHtmlString, template);
 
     $("#afterMain").val(afterHtmlString);
@@ -41,9 +42,10 @@ $("#btnMain").click(function () {
 
 $("#btnCommon").click(function () {
     var partnerId = checkParterId();
+    var enableNpay = checkEnableNpay();
 
     var beforeHtmlString = $("#beforeCommon").val();
-    var template = getTemplate().replace("$partnerId$", partnerId);
+    var template = getTemplate().replace("$partnerId$", partnerId).replace("$enableNpayTag$", enableNpay);
     var afterHtmlString = addCriteoTag(beforeHtmlString, template);
 
     $("#afterCommon").val(afterHtmlString);
@@ -56,7 +58,6 @@ function addCriteoTag(currentHtml, template) {
         return "";
     }
 
-    //if (eventType === "vh") {
     var indexOfBody = currentHtml.indexOf("</body>");
     if (indexOfBody < 0) {
         alert("</body> 태그를 찾을수 없습니다");
@@ -64,7 +65,6 @@ function addCriteoTag(currentHtml, template) {
     }
 
     return currentHtml.slice(0, indexOfBody) + template + currentHtml.slice(indexOfBody);
-    //}
 }
 
 function getTagVersion(currentHtml) {
@@ -72,13 +72,15 @@ function getTagVersion(currentHtml) {
 }
 
 function getTemplate() {
-    //if (eventType === "vh") {
         return $.ajax({
             type: "GET",
             url: "templates/onetag.html",
             async: false
         }).responseText;
-    //}
+}
+
+function checkEnableNpay() {
+    return document.getElementById("cbNpay").checked;
 }
 
 function checkParterId() {

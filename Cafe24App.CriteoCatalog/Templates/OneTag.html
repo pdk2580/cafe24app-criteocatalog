@@ -1,59 +1,56 @@
 ﻿<div class="criteo-onetag" data-version="1.0">
     <script type="text/javascript" src="//static.criteo.net/js/ld/ld.js" async="true"></script>
     <script type="text/javascript">
+        var enableNpayTag = $enableNpayTag$;
+        var partnerId = $partnerId$;
         var listingModuleClass = "xans-product-listnormal";
         var detailModuleClass = "xans-product-detail";
         var basketModuleClass = "xans-order-basketpackage";
         var salesModuleClass = "xans-order-result";
 
-        if (getPageType() === "listing") {
+        var pageType = getPageType();
+        if (pageType === "listing") {
             criteoEvent({ event: "viewList", item: getTop3ProductIds() });
-        } else if (getPageType() === "detail") {
+        } else if (pageType === "detail") {
             criteoEvent({ event: "viewItem", item: getProductId() });
-        } else if (getPageType() === "basket") {
-            criteoEvent({ event: "viewBasket", item: getBasketProducts() });
-        } else if (getPageType() === "sales") {
-            criteoEvent({ event: "trackTransaction", id: getTransactionId(), item: getSalesProducts() });
+            if (enableNpayTag) {
+                criteoNpayEvent(pageType, getProductId());
+            }
+        } else if (pageType === "basket") {
+            callBasketEvents();
+        } else if (pageType === "sales") {
+            callSalesEvents();
         } else {
             criteoEvent({ event: "viewHome" });
         }
 
-        //function waitFor(variable) {
-        //    if (typeof variable !== "undefined") {
-        //        //variable exists, do what you want
-        //    }
-        //    else {
-        //        setTimeout(waitForElement, 250);
-        //    }
-        //}
-
-        function getTransactionId() {
-            return EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA.order_id;
-        }
-
-        function getSalesProducts() {
+        function callSalesEvents() {
             if (typeof EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA !== "undefined") {
+                var transactionId = EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA.order_id;
                 var criteoProductData = [];
                 EC_FRONT_EXTERNAL_SCRIPT_VARIABLE_DATA.order_product.forEach(function (productData) {
                     criteoProductData.push({ id: productData.product_no, price: productData.sum_total_opt_price, quantity: productData.quantity });
                 });
-                return criteoProductData;
-            }
-            else {
-                setTimeout(getSalesProducts, 100);
+
+                criteoEvent({ event: "trackTransaction", id: transactionId, item: criteoProductData });
+            } else {
+                setTimeout(callSalesEvents, 100);
             }
         }
-        
-        function getBasketProducts() {
+
+        function callBasketEvents() {
             if (typeof aBasketProductData !== "undefined") {
                 var criteoProductData = [];
                 aBasketProductData.forEach(function (productData) {
                     criteoProductData.push({ id: productData.product_no, price: productData.product_sum_price, quantity: productData.quantity });
                 });
-                return criteoProductData;
-            }
-            else {
-                setTimeout(getBasketProducts, 100);
+
+                criteoEvent({ event: "viewBasket", item: criteoProductData });
+                if (enableNpayTag) {
+                    criteoNpayEvent(pageType, criteoProductData);
+                }
+            } else {
+                setTimeout(callBasketEvents, 100);
             }
         }
 
@@ -99,11 +96,77 @@
             return "homepage";
         }
 
+        function addEvent(className, evType, fn) {
+            document.addEventListener(evType, function (e) {
+                if (e.target && e.target.classList.contains(className)) {
+                    fn();
+                }
+            });
+        }
+
+        function arraysMatch(arr1, arr2) {
+            if (arr1.length !== arr2.length) return false;
+            for (var i = 0; i < arr1.length; i++) {
+                if (arr1[i] !== arr2[i]) return false;
+            }
+            return true;
+        };
+
+        function criteoNpayEvent(pageType, obj) {
+            window.criteo_q = window.criteo_q || [];
+            window.criteo_q.push({
+                requiresDOM: "non-blocking", cb: function () {
+                    addEvent("npay_btn_pay", "click", function () {
+                        if (typeof (Storage) !== "undefined") {
+                            var lastNpayTransaction = localStorage.lastNpayTransaction;
+                            var itemIdArray = [];
+
+                            if (pageType === "detail") {
+                                itemIdArray.push(obj);
+                            } else if (pageType === "basket") {
+                                for (item in obj)
+                                    itemIdArray.push(obj[item].id);
+                                itemIdArray.sort();
+                            }
+
+
+                            if (lastNpayTransaction !== undefined) {
+                                var lastNpayTimestamp = lastNpayTransaction.split("||")[0];
+                                var lastNpayProductsArray = lastNpayTransaction.split("||")[1].split(",").sort();
+                                if ((Date.now() - lastNpayTimestamp) / 1000 / 60 < 10 && arraysMatch(itemIdArray, lastNpayProductsArray))
+                                    return;
+                            }
+
+                            var deviceType = /iPad/.test(navigator.userAgent) ? "t" : /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Silk/.test(navigator.userAgent) ? "m" : "d";
+                            if (pageType === "detail") {
+                                criteo_q.push(
+                                    { event: "setAccount", account: partnerId },
+                                    { event: "setEmail", email: "" },
+                                    { event: "setSiteType", type: deviceType },
+                                    { event: "trackTransaction", id: "npay" + Math.floor(Math.random() * 99999999999), item: [{ id: obj, price: product_price, quantity: checkQuantity() }] },
+                                    { event: "setResponseType", type: "gif" }
+                                );
+                            } else if (pageType === "basket") {
+                                criteo_q.push(
+                                    { event: "setAccount", account: partnerId },
+                                    { event: "setEmail", email: "" },
+                                    { event: "setSiteType", type: deviceType },
+                                    { event: "trackTransaction", id: "npay" + Math.floor(Math.random() * 99999999999), item: obj },
+                                    { event: "setResponseType", type: "gif" }
+                                );
+                            }
+                            localStorage.lastNpayTransaction = Date.now() + "||" + itemIdArray.join();
+                        }
+                    });
+                }
+            });
+        }
+
         function criteoEvent(eventObj) {
             window.criteo_q = window.criteo_q || [];
             var deviceType = /iPad/.test(navigator.userAgent) ? "t" : /Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Silk/.test(navigator.userAgent) ? "m" : "d";
             window.criteo_q.push(
-                { event: "setAccount", account: $partnerId$ },
+                { event: "setAccount", account: partnerId },
                 { event: "setEmail", email: "" },
                 { event: "setSiteType", type: deviceType },
                 eventObj);
