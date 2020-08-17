@@ -791,7 +791,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
                 CacheItemPolicy policy = new CacheItemPolicy();
                 policy.AbsoluteExpiration = DateTime.Now.AddHours(1);
                 //var filteredProducts = tempProducts.Where(product => product.sold_out.Equals("F") && product.adult_certification.Equals("F") && product.buy_limit_by_product.Equals("F"));
-                var filteredProducts = tempProducts.Where(product => product.sold_out.Equals("F") && !string.IsNullOrEmpty(product.detail_image) && !product.product_name.Contains("결제") && !product.product_name.Contains("개인")).DistinctBy(product => product.product_no);
+                var filteredProducts = tempProducts.Where(product => product.sold_out.Equals("F") && !string.IsNullOrEmpty(product.detail_image) && !product.product_name.Contains("결제") && !product.product_name.Contains("개인") && !product.product_name.Contains("배송비")).DistinctBy(product => product.product_no);
                 cache.Set($"{mallId}-p", filteredProducts, policy);
                 return filteredProducts;
             }
