@@ -65,7 +65,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
 
             if (!installedAppsString.Contains(mallId))
             {
-                using (StreamWriter outputFile = new StreamWriter(Path.Combine(path, filename)))
+                using (StreamWriter outputFile = new StreamWriter(Path.Combine(path, filename), true))
                 {
                     outputFile.WriteLine(mallId);
                 }
