@@ -7,7 +7,7 @@ namespace Cafe24App.CriteoCatalog.Models.Cafe24
 {
     public class ProductCategory
     {
-        public int product_no { get; set; }
+        public int? product_no { get; set; }
         public Category category { get; set; }
     }
 }

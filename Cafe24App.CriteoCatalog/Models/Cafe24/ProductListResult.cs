@@ -13,7 +13,7 @@ namespace Cafe24App.CriteoCatalog.Models.Cafe24
     [Serializable]
     public class Product
     {
-        public int product_no { get; set; }
+        public int? product_no { get; set; }
         public string product_name { get; set; }
         public string price { get; set; }
         public string retail_price { get; set; }

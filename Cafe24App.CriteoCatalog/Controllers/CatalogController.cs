@@ -450,7 +450,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
                                 //foreach (dynamic product in result.products)
                                 foreach (Product product in result.products)
                                 {
-                                    int product_no = product.product_no;
+                                    int? product_no = product.product_no;
                                     if (!tempProductCategories.Exists(productCategory => productCategory.product_no.Equals(product_no)))
                                     {
                                         tempProductCategories.Add(new ProductCategory { product_no = product_no, category = category });
@@ -702,7 +702,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
                 //foreach (Category category in categories)
                 //{
                     int offset = 0;
-                    int lastProductNo = 0;
+                    int? lastProductNo = 0;
                     //int categoryNo = category.category_no;
 
                     int categoryCount = 0;
@@ -759,7 +759,7 @@ namespace Cafe24App.CriteoCatalog.Controllers
                             }
                             catch (Exception ex)
                             {
-                                throw new Exception($"categoryProcessed: {test1}" + Environment.NewLine + categoryCountString + Environment.NewLine + $"totalProducts: {tempProducts.Count()}" + Environment.NewLine + urlcheck + Environment.NewLine + response.Content.ReadAsStringAsync().Result);
+                                throw new Exception($"categoryProcessed: {test1}" + Environment.NewLine + categoryCountString + Environment.NewLine + $"totalProducts: {tempProducts.Count()}" + Environment.NewLine + urlcheck + Environment.NewLine + response.Content.ReadAsStringAsync().Result + Environment.NewLine + ex.ToString());
                             }
 
                             var apiLimit = response.Headers?.GetValues("X-Api-Call-Limit").FirstOrDefault();
