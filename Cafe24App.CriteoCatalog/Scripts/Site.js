@@ -53,9 +53,20 @@ $("#btnMobile").click(function () {
 
 function addCriteoTag(currentHtml, template) {
     var tagVersion = getTagVersion(currentHtml);
+    var templateTagVersion = getTagVersion(template);
     if (tagVersion !== null) {
-        alert("Criteo 태그가 이미 적용되어 있습니다. 현재 버전: " + tagVersion);
-        return "";
+        if (templateTagVersion !== tagVersion) {
+            if (confirm("현재 " + tagVersion + "이 적용되어 있습니다. 새 버전(" + templateTagVersion + ")으로 업데이트 하시겠습니까?")) {
+                var indexOfCriteoTag = currentHtml.indexOf("<div class=\"criteo-onetag\"");
+                var indexOfBody = currentHtml.indexOf("</body>");
+                return currentHtml.slice(0, indexOfCriteoTag) + template + currentHtml.slice(indexOfBody);
+            } else {
+                return "";
+            }
+        } else {
+            alert("Criteo 태그가 이미 적용되어 있습니다. 현재 버전: " + tagVersion);
+            return "";
+        }
     }
 
     var indexOfBody = currentHtml.indexOf("</body>");

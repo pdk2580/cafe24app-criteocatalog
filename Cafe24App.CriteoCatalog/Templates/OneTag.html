@@ -1,4 +1,4 @@
-﻿<div class="criteo-onetag" data-version="1.0">
+﻿<div class="criteo-onetag" data-version="1.1">
     <script type="text/javascript" src="//static.criteo.net/js/ld/ld.js" async="true"></script>
     <script type="text/javascript">
         var enableNpayTag = $enableNpayTag$;
@@ -12,16 +12,24 @@
         if (pageType === "listing") {
             criteoEvent({ event: "viewList", item: getTop3ProductIds() });
         } else if (pageType === "detail") {
-            criteoEvent({ event: "viewItem", item: getProductId() });
-            if (enableNpayTag) {
-                criteoNpayEvent(pageType, getProductId());
-            }
+            callProductEvents();
         } else if (pageType === "basket") {
             callBasketEvents();
         } else if (pageType === "sales") {
             callSalesEvents();
         } else {
             criteoEvent({ event: "viewHome" });
+        }
+
+        function callProductEvents() {
+            if (typeof iProductNo !== "undefined") {
+                criteoEvent({ event: "viewItem", item: iProductNo });
+                if (enableNpayTag) {
+                    criteoNpayEvent(pageType, iProductNo);
+                }
+            } else {
+                setTimeout(callProductEvents, 100);
+            }
         }
 
         function callSalesEvents() {
@@ -55,11 +63,10 @@
         }
 
         function getProductId() {
-            var matches = document.documentElement.innerHTML.match(/(?<=\bproduct_no=")[^"]*/g);
-            if (matches !== null) {
-                return matches[0];
+            if (typeof iProductNo !== "undefined") {
+                return iProductNo;
             } else {
-                return "";
+                setTimeout(getProductId, 100);
             }
         }
 
